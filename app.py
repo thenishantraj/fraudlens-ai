@@ -30,6 +30,9 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
+    [data-testid="collapsedControl"] {
+    display: none;
+    }
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
