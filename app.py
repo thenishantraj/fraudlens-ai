@@ -335,7 +335,7 @@ def main():
                 risk_chart = utils.create_risk_distribution_chart(filtered_df)
                 if risk_chart:
                     st.plotly_chart(risk_chart, use_container_width=True)
-                    st.info("**Storyteller Insight:** Most tenders fall into the 'Medium' category, but the 'High' and 'Critical' risk slices represent the primary targets for forensic investigation.")
+                    st.info("**Insight:** Most tenders fall into the 'Medium' category, but the 'High' and 'Critical' risk slices represent the primary targets for forensic investigation.")
                 
                 # Price Distribution
                 price_chart = utils.create_price_distribution_chart(filtered_df)
@@ -347,20 +347,20 @@ def main():
                 dept_chart = utils.create_anomaly_by_department_chart(filtered_df)
                 if dept_chart:
                     st.plotly_chart(dept_chart, use_container_width=True)
-                    st.info("**Storyteller Insight:** Sectors like Transportation and Finance often show higher risk density, requiring automated pre-award screening.")
+                    st.info("**Insight:** Sectors like Transportation and Finance often show higher risk density, requiring automated pre-award screening.")
                 
                 # Vendor Risk Heatmap
                 if st.session_state.vendor_analysis is not None:
                     heatmap_chart = utils.create_vendor_risk_heatmap(filtered_df)
                     if heatmap_chart:
                         st.plotly_chart(heatmap_chart, use_container_width=True)
-                        st.info("**Storyteller Insight:** Red zones identify vendors who repeatedly trigger risk flags, helping auditors spot 'Habitual Offenders' instantly.")
+                        st.info("**Insight:** Red zones identify vendors who repeatedly trigger risk flags, helping auditors spot 'Habitual Offenders' instantly.")
             
             # Timeline Chart (full width)
             timeline_chart = utils.create_timeline_chart(filtered_df)
             if timeline_chart:
                 st.plotly_chart(timeline_chart, use_container_width=True)
-                st.info("**Storyteller Insight:** This scatter plot reveals surges in high-risk bids over time, helping detect coordinated bid-rigging attempts during specific periods.")
+                st.info("**Insight:** This scatter plot reveals surges in high-risk bids over time, helping detect coordinated bid-rigging attempts during specific periods.")
             
             st.markdown("---")
             
