@@ -198,7 +198,7 @@ def main():
         st.markdown(
             """
             <div style='text-align: center; color: #94a3b8;'>
-                <p>Built with ❤️ for Hackathon</p>
+                <p>Built by Team - VectorX</p>
                 <p>v1.0.0</p>
             </div>
             """,
@@ -437,29 +437,7 @@ def main():
             - Vendor risk profiling
             """)
         
-        with col2:
-            st.markdown("""
-            ### 🏆 **Hackathon Ready**
-            
-            **Built for:**
-            - 12-15 hour hackathon timeline
-            - Production-grade code
-            - Easy deployment
-            - Clean, modern UI
-            
-            **Tech Stack:**
-            - Python & Scikit-learn
-            - Streamlit for frontend
-            - Plotly for visuals
-            - Isolation Forest & NLP
-            
-            **Next Steps:**
-            1. Use the sidebar to load data
-            2. Run analysis
-            3. Explore results
-            4. Export findings
-            """)
-            
+    
             st.markdown("---")
             
             # Quick actions
