@@ -30,23 +30,6 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    /* 1. Sidebar ko hamesha ke liye left side mein lock karna bina features break kiye */
-    [data-testid="stSidebar"] {
-        min-width: 320px !important;
-        max-width: 320px !important;
-    }
-
-    /* 2. Band karne wala arrow hamesha ke liye gayab */
-    [data-testid="collapsedControl"] {
-        display: none !important;
-    }
-
-    /* 3. Sidebar ke andar ka content force-show karna */
-    [data-testid="stSidebarNav"] {
-        display: block !important;
-    }
-    
-    /* 4. Dashboard headers styling (Pehle wala hi hai) */
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
@@ -54,6 +37,12 @@ st.markdown("""
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 1rem;
+    }
+    .metric-card {
+        background-color: #1e293b;
+        padding: 1.5rem;
+        border-radius: 10px;
+        border-left: 4px solid #3b82f6;
     }
 </style>
 """, unsafe_allow_html=True)
