@@ -24,5 +24,5 @@ FraudLens AI is a professional-grade fraud detection system that identifies irre
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/fraudlens-ai.git
+git clone (https://github.com/thenishantraj/fraudlens-ai)
 cd fraudlens-ai
