@@ -30,14 +30,12 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    /* 1. Sidebar ko zabardasti samne laane aur width dene ke liye */
+    /* 1. Sidebar ko hamesha ke liye left side mein lock karna */
     [data-testid="stSidebar"] {
         display: block !important;
         visibility: visible !important;
-        width: 350px !important; /* Proper width set ki hai */
-        left: 0 !important;
-        position: fixed !important;
-        z-index: 1000001 !important; /* Sabse upar dikhega */
+        min-width: 300px !important;
+        max-width: 300px !important;
     }
 
     /* 2. Band karne wala arrow hamesha ke liye gayab */
@@ -45,7 +43,20 @@ st.markdown("""
         display: none !important;
     }
 
-    /* 3. Main content ki styling (Jo aapka pehle se tha) */
+    /* 3. Main Dashboard ko force karna ki wo sidebar ke aage se shuru ho */
+    .main .block-container {
+        padding-left: 5rem !important;
+        padding-right: 5rem !important;
+    }
+    
+    /* Mobile devices par sidebar ko normal behavior dena */
+    @media (max-width: 991px) {
+        [data-testid="stSidebar"] {
+            min-width: auto !important;
+        }
+    }
+
+    /* Existing Styling (Headers, Cards, etc.) */
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
@@ -54,31 +65,11 @@ st.markdown("""
         -webkit-text-fill-color: transparent;
         margin-bottom: 1rem;
     }
-    .sub-header {
-        font-size: 1.2rem;
-        color: #94a3b8;
-        margin-bottom: 2rem;
-    }
     .metric-card {
         background-color: #1e293b;
         padding: 1.5rem;
         border-radius: 10px;
         border-left: 4px solid #3b82f6;
-    }
-    .high-risk {
-        border-left: 4px solid #ef4444 !important;
-    }
-    .medium-risk {
-        border-left: 4px solid #f59e0b !important;
-    }
-    .low-risk {
-        border-left: 4px solid #10b981 !important;
-    }
-    .stDataFrame {
-        background-color: #1e293b;
-    }
-    div[data-testid="stToolbar"] {
-        display: none;
     }
 </style>
 """, unsafe_allow_html=True)
