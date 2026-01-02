@@ -38,11 +38,6 @@ st.markdown("""
         transform: none !important;
         transition: none !important;
     }
-    
-    /* 2. Hide the arrow button so no one can close it again */
-    [data-testid="collapsedControl"] {
-        display: none !important;
-    }
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
