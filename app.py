@@ -158,27 +158,29 @@ def main():
         # Filters
         st.markdown("### 🔍 Filters")
         if st.session_state.results_df is not None:
-            # Risk level filter
-            risk_levels = st.multiselect(
-                "Risk Level",
-                options=['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'],
-                default=['HIGH', 'CRITICAL']
-            )
-            
-            # Department filter
-            departments = st.multiselect(
-                "Department",
-                options=sorted(st.session_state.results_df['department'].unique().tolist())
-            )
-            
-            # Apply filters
-            filtered_df = st.session_state.results_df.copy()
-            if risk_levels:
-                filtered_df = filtered_df[filtered_df['risk_level'].isin(risk_levels)]
-            if departments:
-                filtered_df = filtered_df[filtered_df['department'].isin(departments)]
-            
-            st.session_state.filtered_df = filtered_df
+            # Check if risk_level exists to prevent KeyError before analysis
+            if 'risk_level' in st.session_state.results_df.columns:
+                risk_levels = st.multiselect(
+                    "Risk Level",
+                    options=['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'],
+                    default=['HIGH', 'CRITICAL']
+                )
+                
+                departments = st.multiselect(
+                    "Department",
+                    options=sorted(st.session_state.results_df['department'].unique().tolist())
+                )
+                
+                # Apply filters safely
+                filtered_df = st.session_state.results_df.copy()
+                if risk_levels:
+                    filtered_df = filtered_df[filtered_df['risk_level'].isin(risk_levels)]
+                if departments:
+                    filtered_df = filtered_df[filtered_df['department'].isin(departments)]
+                
+                st.session_state.filtered_df = filtered_df
+            else:
+                st.sidebar.warning("Please run analysis to enable filters.")
         
         st.markdown("---")
         
@@ -212,6 +214,7 @@ def main():
     # Dashboard
     if st.session_state.results_df is not None:
         df = st.session_state.results_df
+        # Use a safe default if filtered_df is not yet set
         filtered_df = st.session_state.get('filtered_df', df)
         
         # Summary Metrics
@@ -375,37 +378,38 @@ def main():
         st.markdown("---")
         st.markdown("### 🎯 Anomaly Explanations")
         
-        high_risk_items = filtered_df[filtered_df['risk_level'].isin(['HIGH', 'CRITICAL'])]
-        
-        if len(high_risk_items) > 0:
-            for idx, row in high_risk_items.head(10).iterrows():
-                risk_color = "#ef4444" if row['risk_level'] == 'HIGH' else "#dc2626"
-                
-                with st.expander(f"🔴 {row['tender_id']} - {row['vendor_name']} (Risk: {row['risk_level']}, Score: {row['risk_score']:.1f})"):
-                    col1, col2, col3 = st.columns(3)
+        if 'risk_level' in filtered_df.columns:
+            high_risk_items = filtered_df[filtered_df['risk_level'].isin(['HIGH', 'CRITICAL'])]
+            
+            if len(high_risk_items) > 0:
+                for idx, row in high_risk_items.head(10).iterrows():
+                    risk_color = "#ef4444" if row['risk_level'] == 'HIGH' else "#dc2626"
                     
-                    with col1:
-                        st.metric("Department", row['department'])
-                        st.metric("Category", row['category'])
-                    
-                    with col2:
-                        st.metric("Total Amount", f"${row['total_amount']:,.2f}")
-                        st.metric("Unit Price", f"${row.get('unit_price', 0):,.2f}")
-                    
-                    with col3:
-                        st.metric("Risk Level", row['risk_level'])
-                        st.metric("Document Similarity", "Yes" if row.get('document_similarity', 0) == 1 else "No")
-                    
-                    # Explanation
-                    if 'explanation' in row and pd.notna(row['explanation']):
-                        st.markdown(f"**Explanation:** {row['explanation']}")
-                    else:
-                        st.markdown("**Explanation:** Multiple risk factors detected")
-                    
-                    # Description
-                    st.markdown(f"**Description:** {row['description']}")
-        else:
-            st.info("No high-risk items found with current filters.")
+                    with st.expander(f"🔴 {row['tender_id']} - {row['vendor_name']} (Risk: {row['risk_level']}, Score: {row['risk_score']:.1f})"):
+                        col1, col2, col3 = st.columns(3)
+                        
+                        with col1:
+                            st.metric("Department", row['department'])
+                            st.metric("Category", row['category'])
+                        
+                        with col2:
+                            st.metric("Total Amount", f"${row['total_amount']:,.2f}")
+                            st.metric("Unit Price", f"${row.get('unit_price', 0):,.2f}")
+                        
+                        with col3:
+                            st.metric("Risk Level", row['risk_level'])
+                            st.metric("Document Similarity", "Yes" if row.get('document_similarity', 0) == 1 else "No")
+                        
+                        # Explanation
+                        if 'explanation' in row and pd.notna(row['explanation']):
+                            st.markdown(f"**Explanation:** {row['explanation']}")
+                        else:
+                            st.markdown("**Explanation:** Multiple risk factors detected")
+                        
+                        # Description
+                        st.markdown(f"**Description:** {row['description']}")
+            else:
+                st.info("No high-risk items found with current filters.")
     
     else:
         # Welcome screen
