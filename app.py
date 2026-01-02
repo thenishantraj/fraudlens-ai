@@ -1,5 +1,5 @@
 """
-FraudLens AI - Complete Final Production Code (465+ Lines Restored)
+FraudLens AI
 """
 
 import streamlit as st
@@ -11,14 +11,15 @@ import plotly.graph_objects as go
 import sys
 import os
 
-# Custom module paths
+# Add custom modules to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Import custom modules
 from data_generator import save_sample_data
 from models import FraudDetectionPipeline, VendorRiskAnalyzer
 import utils
 
-# --- Configuration ---
+# Page configuration
 st.set_page_config(
     page_title="FraudLens AI",
     page_icon="🔍",
@@ -26,137 +27,106 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- Custom Styling ---
+# --- Updated CSS for Better Visibility ---
 st.markdown("""
 <style>
-    .main-header { font-size: 2.5rem; font-weight: 700; background: linear-gradient(90deg, #3b82f6, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; }
-    .metric-card { background-color: #1e293b; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #3b82f6; margin-bottom: 1rem; }
+    .main-header { font-size: 2.5rem; font-weight: 700; color: #3b82f6; margin-bottom: 1rem; }
+    /* Metric Card Fix for visibility */
+    .metric-card { 
+        background-color: #1e293b; 
+        padding: 1.5rem; 
+        border-radius: 10px; 
+        border: 1px solid #334155;
+        border-left: 4px solid #3b82f6;
+        margin-bottom: 1rem;
+    }
+    .metric-label { color: #94a3b8 !important; font-size: 0.9rem; font-weight: 600; }
+    .metric-value { color: #ffffff !important; font-size: 1.8rem; font-weight: 700; }
     .high-risk { border-left: 4px solid #ef4444 !important; }
-    div[data-testid="stToolbar"] { display: none; }
-    .reportview-container { background: #0f172a; }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Session State ---
+# Initialize session state
 if 'results_df' not in st.session_state: st.session_state.results_df = None
-if 'vendor_analysis' not in st.session_state: st.session_state.vendor_analysis = None
 
 def main():
-    # --- Sidebar ---
+    # --- Sidebar for User Interaction ---
     with st.sidebar:
         st.image("https://img.icons8.com/color/96/000000/detective.png", width=80)
-        st.markdown("<h2 style='text-align: center;'>FraudLens AI</h2>", unsafe_allow_html=True)
+        st.header("Control Panel")
         st.markdown("---")
         
-        st.markdown("### 📊 Data Source")
-        data_source = st.radio("Choose source:", ["Upload File", "Generate Sample Data", "Demo Mode"], label_visibility="collapsed")
+        # Interaction Point 1: File Upload
+        st.subheader("📁 Step 1: Data Input")
+        data_source = st.radio("Select Method:", ["Upload Your File", "Generate Demo Data"])
         
-        if data_source == "Upload File":
-            uploaded_file = st.file_uploader("Upload CSV/Excel", type=['csv', 'xlsx'])
-            if uploaded_file:
-                df = utils.load_data(uploaded_file)
-                if df is not None:
-                    if st.button("🔍 Run Fraud Detection", type="primary", use_container_width=True):
-                        with st.spinner("Analyzing..."):
-                            pipeline = FraudDetectionPipeline()
-                            results = pipeline.predict(df)
-                            st.session_state.results_df = results
-                            v_analyzer = VendorRiskAnalyzer()
-                            st.session_state.vendor_analysis = v_analyzer.analyze_vendors(results)
-                            st.rerun()
+        uploaded_df = None
+        if data_source == "Upload Your File":
+            file = st.file_uploader("Upload Procurement CSV", type=['csv'])
+            if file:
+                uploaded_df = pd.read_csv(file)
+                st.success("File Uploaded!")
+        else:
+            if st.button("🚀 Generate Sample Dataset"):
+                uploaded_df = save_sample_data()
+                st.success("Demo Data Ready!")
+
+        st.markdown("---")
         
-        elif data_source == "Generate Sample Data":
-            if st.button("🚀 Generate & Analyze Now", use_container_width=True):
-                with st.spinner("Processing..."):
-                    save_sample_data()
-                    raw_df = pd.read_csv('procurement_data.csv')
+        # Interaction Point 2: Analysis Trigger
+        st.subheader("🧠 Step 2: AI Audit")
+        if uploaded_df is not None:
+            if st.button("🔍 START FRAUD DETECTION", type="primary", use_container_width=True):
+                with st.spinner("Analyzing patterns..."):
                     pipeline = FraudDetectionPipeline()
-                    st.session_state.results_df = pipeline.predict(raw_df)
+                    st.session_state.results_df = pipeline.predict(uploaded_df)
                     st.rerun()
-        
-        st.markdown("---")
-        
-        # --- FIXED FILTER LOGIC ---
-        st.markdown("### 🔍 Filters")
-        if st.session_state.results_df is not None:
-            if 'risk_level' in st.session_state.results_df.columns:
-                risk_levels = st.multiselect("Risk Focus", ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'], default=['HIGH', 'CRITICAL'])
-                
-                f_df = st.session_state.results_df.copy()
-                if risk_levels:
-                    f_df = f_df[f_df['risk_level'].isin(risk_levels)]
-                
-                if 'department' in f_df.columns:
-                    depts = st.multiselect("Department", sorted(f_df['department'].unique().tolist()))
-                    if depts: f_df = f_df[f_df['department'].isin(depts)]
-                
-                st.session_state.filtered_df = f_df
-            else:
-                st.sidebar.warning("Analysis required for filters.")
 
-    # --- Main Header ---
+    # --- Main Dashboard ---
     st.markdown("<h1 class='main-header'>🔍 FraudLens AI</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #94a3b8;'>Advanced Anomaly Detection in Public Procurement</p>", unsafe_allow_html=True)
 
-    # --- Dashboard View ---
     if st.session_state.results_df is not None:
-        view_df = st.session_state.get('filtered_df', st.session_state.results_df)
+        df = st.session_state.results_df
         
-        # Summary Metrics
-        metrics = utils.create_summary_metrics(st.session_state.results_df)
-        f_metrics = utils.create_summary_metrics(view_df)
+        # Interaction Point 3: Interactive Filters
+        st.sidebar.subheader("🎯 Step 3: Filter Results")
+        risk_choice = st.sidebar.multiselect("Risk Focus:", ['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'], default=['HIGH', 'CRITICAL'])
+        
+        f_df = df[df['risk_level'].isin(risk_choice)] if risk_choice else df
 
-        m1, m2, m3, m4, m5 = st.columns(5)
-        with m1: st.markdown(f"<div class='metric-card'>Total Tenders<br><h2>{metrics['total_tenders']:,}</h2></div>", unsafe_allow_html=True)
-        with m2: st.markdown(f"<div class='metric-card high-risk'>Anomalies<br><h2>{f_metrics['flagged_anomalies']}</h2></div>", unsafe_allow_html=True)
-        with m3: st.markdown(f"<div class='metric-card'>High-Risk Vendors<br><h2>{metrics['high_risk_vendors']}</h2></div>", unsafe_allow_html=True)
-        with m4: st.markdown(f"<div class='metric-card'>Avg Risk Score<br><h2>{view_df['risk_score'].mean():.1f}</h2></div>", unsafe_allow_html=True)
-        with m5: st.markdown(f"<div class='metric-card'>Suspicious Ratio<br><h2>{(f_metrics['flagged_anomalies']/max(1, f_metrics['total_tenders'])):.1%}</h2></div>", unsafe_allow_html=True)
+        # Metrics Row with Fixed Visibility
+        m1, m2, m3, m4 = st.columns(4)
+        with m1:
+            st.markdown(f"<div class='metric-card'><p class='metric-label'>Total Audited</p><p class='metric-value'>{len(df)}</p></div>", unsafe_allow_html=True)
+        with m2:
+            anomalies = len(df[df['risk_level'].isin(['HIGH', 'CRITICAL'])])
+            st.markdown(f"<div class='metric-card high-risk'><p class='metric-label'>Anomalies Found</p><p class='metric-value'>{anomalies}</p></div>", unsafe_allow_html=True)
+        with m3:
+            avg_risk = df['risk_score'].mean()
+            st.markdown(f"<div class='metric-card'><p class='metric-label'>Avg Risk Score</p><p class='metric-value'>{avg_risk:.1f}</p></div>", unsafe_allow_html=True)
+        with m4:
+            ratio = (anomalies / len(df)) * 100
+            st.markdown(f"<div class='metric-card'><p class='metric-label'>Suspicious Ratio</p><p class='metric-value'>{ratio:.1f}%</p></div>", unsafe_allow_html=True)
 
         st.markdown("---")
+        
+        # Charts and Data Table
+        col_c1, col_c2 = st.columns(2)
+        with col_c1:
+            st.plotly_chart(utils.create_risk_distribution_chart(f_df), use_container_width=True)
+        with col_c2:
+            st.plotly_chart(utils.create_anomaly_by_department_chart(f_df), use_container_width=True)
 
-        # Visuals Section
-        c1, c2 = st.columns(2)
-        with c1:
-            if not view_df.empty and 'risk_level' in view_df.columns:
-                st.plotly_chart(utils.create_risk_distribution_chart(view_df), use_container_width=True)
-                st.plotly_chart(utils.create_price_distribution_chart(view_df), use_container_width=True)
-        with c2:
-            if not view_df.empty and 'department' in view_df.columns:
-                st.plotly_chart(utils.create_anomaly_by_department_chart(view_df), use_container_width=True)
-                if st.session_state.vendor_analysis is not None:
-                    st.plotly_chart(utils.create_vendor_risk_heatmap(view_df), use_container_width=True)
-
-        st.plotly_chart(utils.create_timeline_chart(view_df), use_container_width=True)
-
-        st.markdown("### 📋 Detailed Analysis")
-        st.dataframe(view_df, use_container_width=True)
-
-        # Anomaly Explanations
-        st.markdown("### 🎯 Deep-Dive Explanations")
-        high_risk = view_df[view_df['risk_level'].isin(['HIGH', 'CRITICAL'])].head(10)
-        for _, row in high_risk.iterrows():
-            with st.expander(f"🔴 {row['tender_id']} - {row['vendor_name']} (Risk: {row['risk_score']:.1f})"):
-                st.write(f"**Description:** {row['description']}")
-                st.write(f"**AI Reason:** {row.get('explanation', 'Multi-factor risk detected.')}")
+        st.markdown("### 📋 Forensic Audit Table")
+        st.dataframe(f_df, use_container_width=True)
+        
+        # Download Interaction
+        st.download_button("📥 Export Report", f_df.to_csv(index=False), "fraud_report.csv", "text/csv")
 
     else:
-        # Welcome Screen
-        st.info("👋 Welcome! Use the sidebar to upload a file or generate sample data to begin.")
-        col_w1, col_w2 = st.columns([2, 1])
-        with col_w1:
-            st.markdown("""
-            ### 🔍 Core Detection Capabilities:
-            - **Price Inflation**: Market-outlier detection using Isolation Forests.
-            - **Document Duplication**: NLP/BERT analysis for bid-rigging patterns.
-            - **Vendor Profiling**: High-risk pattern recognition.
-            """)
-            if st.button("🚀 Start Demo Mode", use_container_width=True, type="primary"):
-                save_sample_data()
-                df_raw = pd.read_csv('procurement_data.csv')
-                pipeline = FraudDetectionPipeline()
-                st.session_state.results_df = pipeline.predict(df_raw)
-                st.rerun()
+        # Welcome Interaction for new users
+        st.info("👋 Hello! To start checking for fraud, please use the **Control Panel** on the left to upload your data.")
+        st.image("https://img.icons8.com/clouds/500/000000/data-protection.png", width=300)
 
 if __name__ == "__main__":
     main()
