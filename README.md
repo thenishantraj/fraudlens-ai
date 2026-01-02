@@ -17,20 +17,20 @@ By combining **Machine Learning (Isolation Forest)** and **Natural Language Proc
 
 ##  The Challenge
 Public procurement accounts for billions in government spending, yet it remains the #1 sector for financial fraud.
-- **Manual Audits:** Impossible to scan thousands of complex documents manually.
-- **Price Inflation:** No automated way to compare unit prices across different departments.
-- **Bid-Rigging:** Colluding vendors often submit identical bid descriptions with minor changes—undetectable without NLP.
+- Manual Audits: Impossible to scan thousands of complex documents manually.
+- Price Inflation: No automated way to compare unit prices across different departments.
+- Bid-Rigging: Colluding vendors often submit identical bid descriptions with minor changes—undetectable without NLP.
 
 ---
 
 ##  Key Features
 Our dashboard is built for **Decision Makers** and **Auditors**, providing instant clarity through data storytelling:
 
-- ** Isolation Forest Anomaly Detection:** High-dimensional outlier detection to find price-gouging and abnormal spending.
-- ** NLP Document Similarity:** Uses Cosine Similarity to detect "copy-paste" bid submissions between competing vendors—the smoking gun of bid-rigging.
-- ** Vendor Risk Heatmaps:** Identifies "Habitual Offenders" by tracking risk density across multiple contracts.
-- ** Risk Timelines:** Visualizes the surge of high-risk bids over time to detect seasonal fraud cycles.
-- ** Explainable AI:** Every flagged record comes with a human-readable explanation (e.g., "Price is 5.3 standard deviations above category average").
+-  Isolation Forest Anomaly Detection: High-dimensional outlier detection to find price-gouging and abnormal spending.
+-  NLP Document Similarity: Uses Cosine Similarity to detect "copy-paste" bid submissions between competing vendors—the smoking gun of bid-rigging.
+-  Vendor Risk Heatmaps: Identifies "Habitual Offenders" by tracking risk density across multiple contracts.
+-  Risk Timelines: Visualizes the surge of high-risk bids over time to detect seasonal fraud cycles.
+-  Explainable AI: Every flagged record comes with a human-readable explanation (e.g., "Price is 5.3 standard deviations above category average").
 
 ---
 
