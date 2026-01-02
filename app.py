@@ -509,7 +509,7 @@ def main():
             - **Suspicious Vendor Patterns**: Vendors with abnormal winning patterns
             - **Bid-Rigging Indicators**: Patterns suggesting collusion
             
-            ### 🚀 **Getting Started**
+            ###  **Getting Started**
             1. **Upload** your procurement data (CSV/Excel)
             2. **Generate** sample data for a demo
             3. **Analyze** and visualize results
@@ -522,28 +522,7 @@ def main():
             - Vendor risk profiling
             """)
         
-        with col2:
-            st.markdown("""
-            ### 🏆 **Hackathon Ready**
-            
-            **Built for:**
-            - 12-15 hour hackathon timeline
-            - Production-grade code
-            - Easy deployment
-            - Clean, modern UI
-            
-            **Tech Stack:**
-            - Python & Scikit-learn
-            - Streamlit for frontend
-            - Plotly for visuals
-            - Isolation Forest & NLP
-            
-            **Next Steps:**
-            1. Use the sidebar to load data
-            2. Run analysis
-            3. Explore results
-            4. Export findings
-            """)
+        
             
             st.markdown("---")
             
