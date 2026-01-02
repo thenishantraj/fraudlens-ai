@@ -211,8 +211,12 @@ def main():
     
     # Dashboard
     if st.session_state.results_df is not None:
-        df = st.session_state.results_df
-        filtered_df = st.session_state.get('filtered_df', df)
+    filtered_df = st.session_state.results_df.copy()
+    if 'risk_level' in filtered_df.columns:
+        risk_levels = st.sidebar.multiselect("Risk Level", ['HIGH', 'MEDIUM', 'LOW'], ['HIGH', 'MEDIUM', 'LOW'])
+        filtered_df = filtered_df[filtered_df['risk_level'].isin(risk_levels)]
+else:
+    filtered_df = None
         
         # Summary Metrics
         metrics = utils.create_summary_metrics(df)
