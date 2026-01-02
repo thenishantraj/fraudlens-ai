@@ -30,14 +30,22 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    /* 1. Force Sidebar to be visible even if toggled */
+    /* 1. Sidebar ko zabardasti samne laane aur width dene ke liye */
     [data-testid="stSidebar"] {
         display: block !important;
         visibility: visible !important;
+        width: 350px !important; /* Proper width set ki hai */
         left: 0 !important;
-        transform: none !important;
-        transition: none !important;
+        position: fixed !important;
+        z-index: 1000001 !important; /* Sabse upar dikhega */
     }
+
+    /* 2. Band karne wala arrow hamesha ke liye gayab */
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
+
+    /* 3. Main content ki styling (Jo aapka pehle se tha) */
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
@@ -71,9 +79,6 @@ st.markdown("""
     }
     div[data-testid="stToolbar"] {
         display: none;
-    }
-    .reportview-container {
-        background: #0f172a;
     }
 </style>
 """, unsafe_allow_html=True)
