@@ -52,5 +52,6 @@ Our dashboard is built for **Decision Makers** and **Auditors**, providing insta
 ### Installation & Execution
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/thenishantraj/fraudlens-ai](https://github.com/thenishantraj/fraudlens-ai)
+   git clone [https://github.com/thenishantraj/fraudlens-ai]
    cd fraudlens-ai
+   '''
