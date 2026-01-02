@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Import custom modules
 from data_generator import save_sample_data, ProcurementDataGenerator
-from models import FraudDetectionPipeline
+from models import FraudDetectionPipeline, VendorRiskAnalyzer
 import utils
 
 # Page configuration
