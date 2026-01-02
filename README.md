@@ -1,8 +1,8 @@
-# FraudLens AI 🕵️‍♂️
+# FraudLens AI 
 
 > Advanced Anomaly Detection in Public Procurement & Government Spending
 
-## 🎯 Project Overview
+##  Project Overview
 
 FraudLens AI is a professional-grade fraud detection system that identifies irregularities, anomalies, and suspicious patterns in public procurement and government spending data. Built for hackathons with production-ready code.
 
@@ -14,7 +14,7 @@ FraudLens AI is a professional-grade fraud detection system that identifies irre
 - **Real-time Analysis**: Process data and generate insights instantly
 - **Explainable AI**: Clear explanations for every flagged anomaly
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Python 3.8+
