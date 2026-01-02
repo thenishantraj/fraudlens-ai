@@ -30,12 +30,10 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
-    /* 1. Sidebar ko hamesha ke liye left side mein lock karna */
+    /* 1. Sidebar ko hamesha ke liye left side mein lock karna bina features break kiye */
     [data-testid="stSidebar"] {
-        display: block !important;
-        visibility: visible !important;
-        min-width: 300px !important;
-        max-width: 300px !important;
+        min-width: 320px !important;
+        max-width: 320px !important;
     }
 
     /* 2. Band karne wala arrow hamesha ke liye gayab */
@@ -43,20 +41,12 @@ st.markdown("""
         display: none !important;
     }
 
-    /* 3. Main Dashboard ko force karna ki wo sidebar ke aage se shuru ho */
-    .main .block-container {
-        padding-left: 5rem !important;
-        padding-right: 5rem !important;
+    /* 3. Sidebar ke andar ka content force-show karna */
+    [data-testid="stSidebarNav"] {
+        display: block !important;
     }
     
-    /* Mobile devices par sidebar ko normal behavior dena */
-    @media (max-width: 991px) {
-        [data-testid="stSidebar"] {
-            min-width: auto !important;
-        }
-    }
-
-    /* Existing Styling (Headers, Cards, etc.) */
+    /* 4. Dashboard headers styling (Pehle wala hi hai) */
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
@@ -64,12 +54,6 @@ st.markdown("""
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 1rem;
-    }
-    .metric-card {
-        background-color: #1e293b;
-        padding: 1.5rem;
-        border-radius: 10px;
-        border-left: 4px solid #3b82f6;
     }
 </style>
 """, unsafe_allow_html=True)
