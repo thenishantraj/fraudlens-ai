@@ -30,8 +30,18 @@ st.set_page_config(
 # Custom CSS
 st.markdown("""
 <style>
+    /* 1. Force Sidebar to be visible even if toggled */
+    [data-testid="stSidebar"] {
+        display: block !important;
+        visibility: visible !important;
+        left: 0 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+    
+    /* 2. Hide the arrow button so no one can close it again */
     [data-testid="collapsedControl"] {
-    display: none;
+        display: none !important;
     }
     .main-header {
         font-size: 2.5rem;
