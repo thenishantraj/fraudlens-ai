@@ -122,13 +122,7 @@ def main():
             if uploaded_file:
                 df = utils.load_data(uploaded_file)
                 if df is not None:
-                    if df is not None:
-                    # Smart Mapping aur Price cleaning yahan add karo
-                    df = map_dynamic_columns(df)
-                    if 'unit_price' in df.columns:
-                        df['unit_price'] = pd.to_numeric(df['unit_price'].astype(str).str.replace(r'[$,]', '', regex=True), errors='coerce')
-                    
-                    st.success(f"✅ Loaded {len(df)} records with Smart Mapping")
+                    st.success(f"✅ Loaded {len(df)} records")
                     
                     # Show data preview
                     with st.expander("📋 Data Preview"):
