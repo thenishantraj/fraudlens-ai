@@ -56,7 +56,23 @@ if 'vendor_analysis' not in st.session_state:
     st.session_state.vendor_analysis = None
 if 'filtered_df' not in st.session_state:
     st.session_state.filtered_df = None
-
+def map_dynamic_columns(df):
+    column_map = {
+        'vendor_name': ['vendor', 'supplier', 'contractor', 'company', 'party', 'vendor_name'],
+        'unit_price': ['price', 'rate', 'unit cost', 'amount', 'cost', 'unit_price'],
+        'description': ['item', 'details', 'particulars', 'summary', 'work', 'description'],
+        'department': ['dept', 'ministry', 'sector', 'agency', 'department'],
+        'tender_id': ['id', 'ref', 'number', 'sl no', 'code', 'tender_id']
+    }
+    df.columns = df.columns.str.lower()
+    new_mapping = {}
+    for standard_name, keywords in column_map.items():
+        for col in df.columns:
+            if any(k in col for k in keywords):
+                new_mapping[col] = standard_name
+                break
+    return df.rename(columns=new_mapping)
+    
 def run_fraud_detection(df):
     """Run fraud detection pipeline on DataFrame"""
     with st.spinner("Analyzing data for anomalies..."):
@@ -106,7 +122,13 @@ def main():
             if uploaded_file:
                 df = utils.load_data(uploaded_file)
                 if df is not None:
-                    st.success(f"✅ Loaded {len(df)} records")
+                    if df is not None:
+                    # Smart Mapping aur Price cleaning yahan add karo
+                    df = map_dynamic_columns(df)
+                    if 'unit_price' in df.columns:
+                        df['unit_price'] = pd.to_numeric(df['unit_price'].astype(str).str.replace(r'[$,]', '', regex=True), errors='coerce')
+                    
+                    st.success(f"✅ Loaded {len(df)} records with Smart Mapping")
                     
                     # Show data preview
                     with st.expander("📋 Data Preview"):
@@ -342,6 +364,8 @@ def main():
                 price_chart = utils.create_price_distribution_chart(filtered_df)
                 if price_chart:
                     st.plotly_chart(price_chart, use_container_width=True)
+                    avg_val = filtered_df['unit_price'].mean() if 'unit_price' in filtered_df.columns else 0
+                    st.info(f"**Price Analysis:** The average unit price is **${avg_val:,.2f}**. Significant deviations are flagged as potential over-invoicing.")
             
             with col2:
                 # Anomaly by Department
@@ -363,8 +387,8 @@ def main():
             timeline_chart = utils.create_timeline_chart(filtered_df)
             if timeline_chart:
                 st.plotly_chart(timeline_chart, use_container_width=True)
-                latest_risk = filtered_df.iloc[-1]['risk_score']
-                st.info(f"**Temporal Trends:** The most recent tender analyzed holds a risk score of **{latest_risk:.1f}**. Scatter clusters reveal potential coordinated bid-rigging patterns.")
+                latest_risk = filtered_df.iloc[-1]['risk_score'] if not filtered_df.empty else 0
+                st.info(f"**Temporal Trends:** Latest analyzed procurement shows a risk score of **{latest_risk:.1f}**. Clustered points reveal recurring fraud cycles.")
             
             st.markdown("---")
             
