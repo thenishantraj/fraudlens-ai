@@ -335,7 +335,8 @@ def main():
                 risk_chart = utils.create_risk_distribution_chart(filtered_df)
                 if risk_chart:
                     st.plotly_chart(risk_chart, use_container_width=True)
-                    st.info("**Insight:** Most tenders fall into the 'Medium' category, but the 'High' and 'Critical' risk slices represent the primary targets for forensic investigation.")
+                    high_risk_pct = (len(filtered_df[filtered_df['risk_level'].isin(['HIGH', 'CRITICAL'])]) / len(filtered_df)) * 100
+                    st.info(f"**Insight:** Currently, **{high_risk_pct:.1f}%** of analyzed tenders are in high-risk zones. These segments are prioritized for immediate forensic investigation.")
                 
                 # Price Distribution
                 price_chart = utils.create_price_distribution_chart(filtered_df)
@@ -347,20 +348,23 @@ def main():
                 dept_chart = utils.create_anomaly_by_department_chart(filtered_df)
                 if dept_chart:
                     st.plotly_chart(dept_chart, use_container_width=True)
-                    st.info("**Insight:** Sectors like Transportation and Finance often show higher risk density, requiring automated pre-award screening.")
+                    top_dept = filtered_df.groupby('department')['risk_score'].mean().idxmax()
+                    st.info(f"**Departmental Risk Profile:** The highest average risk score is detected in the **{top_dept}** department. This sector requires enhanced pre-award screening protocols.")
                 
                 # Vendor Risk Heatmap
                 if st.session_state.vendor_analysis is not None:
                     heatmap_chart = utils.create_vendor_risk_heatmap(filtered_df)
                     if heatmap_chart:
                         st.plotly_chart(heatmap_chart, use_container_width=True)
-                        st.info("**Insight:** Red zones identify vendors who repeatedly trigger risk flags, helping auditors spot 'Habitual Offenders' instantly.")
+                        top_vendor = filtered_df.groupby('vendor_name')['risk_score'].mean().idxmax()
+                        st.info(f"**Vendor Profiling:** In this dataset, **{top_vendor}** exhibits the highest cumulative risk profile, triggering system-wide forensic flags.")
             
             # Timeline Chart (full width)
             timeline_chart = utils.create_timeline_chart(filtered_df)
             if timeline_chart:
                 st.plotly_chart(timeline_chart, use_container_width=True)
-                st.info("**Insight:** This scatter plot reveals surges in high-risk bids over time, helping detect coordinated bid-rigging attempts during specific periods.")
+                latest_risk = filtered_df.iloc[-1]['risk_score']
+                st.info(f"**Temporal Trends:** The most recent tender analyzed holds a risk score of **{latest_risk:.1f}**. Scatter clusters reveal potential coordinated bid-rigging patterns.")
             
             st.markdown("---")
             
