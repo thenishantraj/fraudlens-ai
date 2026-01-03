@@ -342,6 +342,8 @@ def main():
                 price_chart = utils.create_price_distribution_chart(filtered_df)
                 if price_chart:
                     st.plotly_chart(price_chart, use_container_width=True)
+                    avg_val = filtered_df['unit_price'].mean() if 'unit_price' in filtered_df.columns else 0
+                    st.info(f"**Price Analysis:** The average unit price is **${avg_val:,.2f}**. Significant deviations are flagged as potential over-invoicing.")
             
             with col2:
                 # Anomaly by Department
