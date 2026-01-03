@@ -6,12 +6,14 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import random
+import time
 from typing import List, Dict
 
 class ProcurementDataGenerator:
-    def __init__(self, seed=42):
-        np.random.seed(seed)
-        random.seed(seed)
+    def __init__(self, seed=None):
+        actual_seed = seed if seed is not None else int(time.time())
+        np.random.seed(actual_seed)
+        random.seed(actual_seed)
         
         self.vendors = [
             'Global Suppliers Inc.', 'Tech Solutions Ltd.', 'Office Depot Corp',
